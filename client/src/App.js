@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Main from './Screens/Main/Main'
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Main from './pages/Main';
 
 class App extends Component {
   render() {
     return (
-      <div>
-        <Main/>
-      </div> 
+      <Router>
+        <div>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/:id" component={Main} />
+        </div>
+      </Router>
     );
   }
 }

@@ -4,28 +4,34 @@ const findOrCreate = require('mongoose-findorcreate');
 const { Schema } = mongoose;
 
 const AdSchema = new Schema({
-  name: 'string',
-  path: 'string'
+  adId: 'string',
+  adName: 'string',
+  imgPath: 'string',
+  instanceId: 'string'
 });
 
-const AdGroupSchema = new Schema({
-  name: {
+const AdSetSchema = new Schema({
+  instanceId: 'string',
+  adSetName: {
     type: String,
     required: true
   },
+  campaignId: 'string',
   ads: [AdSchema]
 });
 
 const CampaignSchema = new Schema({
-  _id: false,
-  campaign_id: {
+  campaignId: {
     type: String
   },
-  name: {
+  campaignName: {
     type: String,
     required: true
   },
-  adGroups: [AdGroupSchema]
+  instanceId: {
+    type: String
+  },
+  adSets: [AdSetSchema]
 });
 
 const InstanceSchema = new Schema({
@@ -38,12 +44,12 @@ const InstanceSchema = new Schema({
 
 const Instance = mongoose.model('Instance', InstanceSchema);
 const Campaign = mongoose.model('Campaign', CampaignSchema);
-const AdGroup = mongoose.model('Adgroup', AdGroupSchema);
+const AdSet = mongoose.model('AdSet', AdSetSchema);
 const Ad = mongoose.model('Ad', AdSchema);
 
 module.exports = {
   Instance,
   Campaign,
-  AdGroup,
+  AdSet,
   Ad
 };
