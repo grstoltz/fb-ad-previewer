@@ -1,6 +1,6 @@
 const models = require('../models');
 
-const { data } = require('../db/models/');
+// const { data } = require('../db/models/');
 
 exports.findAll = (req, res) => {
   Instance.find({})

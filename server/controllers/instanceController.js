@@ -22,6 +22,7 @@ exports.getInstance = (req, res) => {
 
     // Create AdSets and Ads
     await arr.forEach(element => {
+      const { adSetId, adSetName, adId, adName, imgPath } = element;
       const idx = objArray.findIndex(
         elem => elem.campaignId === element.campaignId
       );
@@ -32,21 +33,21 @@ exports.getInstance = (req, res) => {
 
       if (adSetIdx === -1) {
         objArray[idx].adSets.push({
-          adSetId: element.adSetId,
-          adSetName: element.adSetName,
+          adSetId,
+          adSetName,
           ads: [
             {
-              adId: element.adId,
-              adName: element.adName,
-              imgPath: element.imgPath
+              adId,
+              adName,
+              imgPath
             }
           ]
         });
       } else {
         objArray[idx].adSets[adSetIdx].ads.push({
-          adId: element.adId,
-          adName: element.adName,
-          imgPath: element.imgPath
+          adId,
+          adName,
+          imgPath
         });
       }
     });
@@ -72,7 +73,6 @@ exports.createInstance = async (req, res) => {
     .toString()
     .slice(2, 11);
 
-  console.log(res.app.locals.data[0]);
   await asyncForEach(res.app.locals.data, element => {
     const {
       [Object.keys(element)[0]]: campaignId,
@@ -94,10 +94,7 @@ exports.createInstance = async (req, res) => {
       adName,
       imgPath
     })
-      .then(result => {
-        console.log(result.dataValues);
-        return result;
-      })
+      .then(result => result)
       .catch(err => console.log(err));
   });
   res.send({ status: 200, instanceId });
