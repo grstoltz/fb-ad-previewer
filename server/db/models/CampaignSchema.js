@@ -12,6 +12,7 @@ const AdSchema = new Schema({
 
 const AdSetSchema = new Schema({
   instanceId: 'string',
+  adSetId: 'string',
   adSetName: {
     type: String,
     required: true

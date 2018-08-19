@@ -1,63 +1,56 @@
-const Nightmare = require('nightmare');
 const path = require('path');
 const fs = require('fs');
-const screenshotSelector = require('nightmare-screenshot-selector');
-const vo = require('vo');
-const csv = require('csvtojson');
+const d3 = require('d3-dsv');
+const webshot = require('webshot');
 
-Nightmare.action('screenshotSelector', screenshotSelector);
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
 
-const captureScreenshot = async (url, id) => {
-  console.log(url, id);
-  const logInSelector = '#u_0_c';
-  const overlaySelector = '#u_0_b';
-  const x = await new Nightmare()
-    .goto(url)
-    .wait(1000)
-    .evaluate(logInSelector => {
-      if (document.querySelector(logInSelector)) {
-        const elem = document.querySelector(logInSelector);
-        elem.parentNode.removeChild(elem);
+const captureScreenshot = (url, id) => {
+  return new Promise((resolve, reject) => {
+    const options = {
+      captureSelector: '#stream_pagelet',
+      errorIfStatusIsNot200: true,
+      timeout: 30 * 1000
+    };
+
+    const location = `${path.join(__dirname, '..', `public/${id}.png`)}`;
+
+    return webshot(url, location, options, err => {
+      if (err) {
+        console.log(err);
+        reject(err);
       }
-    }, logInSelector)
-    .evaluate(overlaySelector => {
-      if (document.querySelector(overlaySelector)) {
-        const elem = document.querySelector(overlaySelector);
-        elem.parentNode.removeChild(elem);
-      }
-    }, overlaySelector)
-    .screenshotSelector('#stream_pagelet') // get the image in a buffer
-    .then(data => {
-      const location = `${path.join(__dirname, '..', `public/${id}.png`)}`;
-      fs.writeFileSync(location, data);
-      return location;
+      resolve(location);
     });
-  return x;
+  });
 };
 
 const processArray = async arr => {
-  for (let i = 0; i < arr.length; i++) {
-    const location = await captureScreenshot(arr[i].Permalink, arr[i]['Ad ID']);
-    arr[i].adPath = location;
-  }
+  const date = Date.now();
+  await asyncForEach(arr, async element => {
+    const imgLocation = await captureScreenshot(
+      element.Permalink,
+      `${element['Ad ID']}-${date}`
+    );
+    console.log(imgLocation);
+    element.imgPath = imgLocation;
+  });
   return arr;
 };
 
-const parseCSV = async filePath => {
-  const newArr = await csv()
-    .fromString(filePath)
-    .then(jsonArr => {
-      return processArray(jsonArr);
-    });
-  return newArr;
+const parseTSV = async str => {
+  const parsedTSV = await d3.tsvParse(str);
+  const processedArray = await processArray(parsedTSV);
+  return processedArray;
 };
 
 exports.parse = async (req, res, next) => {
-  const buffer = req.files[0].buffer.toString('utf8');
-  const processedArray = await parseCSV(buffer);
-  // res.app.locals.data = processedArray;
-  res.send(processedArray);
-  //res.app.locals.data = 'test';
-  //console.log(processedArray);
-  // next();
+  const strBuffer = req.files[0].buffer.toString('utf-16le');
+  const processedArray = await parseTSV(strBuffer);
+  res.app.locals.data = processedArray;
+  next();
 };

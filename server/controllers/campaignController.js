@@ -1,9 +1,5 @@
-const {
-  Instance,
-  Campaign,
-  AdSet,
-  Ad
-} = require('../db/models/CampaignSchema');
+const models = require('../models');
+
 const { data } = require('../db/models/');
 
 exports.findAll = (req, res) => {
@@ -30,66 +26,66 @@ exports.create = async (req, res) => {
   const processAds = async instance => {
     await asyncForEach(data, async element => {
       const {
-        'Ad Set Id': adSetId,
-        'Ad Id': adId,
+        'Ad Set ID': adSetId,
+        'Ad ID': adId,
         'Ad Name': adName,
-        adPath: imgPath
+        Image: imgPath
       } = element;
 
-      await AdSet.find({
-        instanceId: instance._id,
-        ads: {
-          $elemMatch: { adId }
-        }
-      }).then(result => {
-        if (result.length === 0) {
-          Ad.create({ adId, adName, imgPath }).then(ad => {
-            return AdSet.update(
-              { adSetId, instanceId: instance._id },
-              { $push: { ads: { ad } } }
-            ).then(result => {
-              console.log(result);
-              return result;
-            });
-          });
-        }
+      await Ad.create({ adId, adName, imgPath }).then(ad => {
+        console.log(ad);
+        return AdSet.update(
+          { adSetId, instanceId: instance._id },
+          {
+            $push: {
+              ads: { adId: ad.adId, adName: ad.adName, imgPath: ad.imgPath }
+            }
+          }
+        ).then(result => {
+          console.log(result);
+          return result;
+        });
       });
-    });
-
-    Campaign.find({ instanceId: instance._id }).then((result, err) => {
-      if (err) res.send(err);
-      res.send(result);
-    });
+    }).then(res.send('completed'));
   };
 
   // PROCESSING AD SETS
   const processAdSets = async instance => {
-    await asyncForEach(data, async element => {
-      const {
-        'Ad Set Id': adSetId,
-        'Ad Set Name': adSetName,
-        'Campaign ID': campaignId
-      } = element;
+    const adSetArray = [];
 
-      Campaign.find({
-        instanceId: instance._id,
-        campaigns: {
-          $elemMatch: { adSetId }
-        }
-      }).then(result => {
-        if (result.length === 0) {
-          AdSet.create({ adSetId, adSetName, instanceId: instance._id }).then(
-            adSet => {
-              return Campaign.update(
-                { campaignId, instanceId: instance._id },
-                { $push: { adSets: { adSet } } }
-              ).then(result => {
-                console.log(result);
-              });
+    await data.forEach(function(a) {
+      if (!this[a['Ad Set ID']]) {
+        this[a['Ad Set ID']] = {
+          adSetId: a['Ad Set ID'],
+          adSetName: a['Ad Set Name'],
+          campaignId: a['Campaign ID'],
+          instanceId: instance._id
+        };
+        adSetArray.push(this[a['Ad Set ID']]);
+      }
+    }, Object.create(null));
+
+    await asyncForEach(adSetArray, async element => {
+      const { adSetId, adSetName, campaignId } = element;
+
+      await AdSet.create({ adSetId, adSetName, instanceId: instance._id }).then(
+        adSet => {
+          console.log(adSet);
+          return Campaign.update(
+            { campaignId, instanceId: instance._id },
+            {
+              $push: {
+                adSets: {
+                  adSetId: adSet.adSetId,
+                  adSetName: adSet.adSetName
+                }
+              }
             }
-          );
+          ).then(result => {
+            console.log(result);
+          });
         }
-      });
+      );
     });
     processAds(instance);
   };
