@@ -1,6 +1,6 @@
 const db = require('../models');
 
-// const { data } = require('../db/models/');
+// const { data } = require('../db/data');
 
 exports.getInstance = (req, res) => {
   const processResults = async arr => {

@@ -1,7 +1,17 @@
+const aws = require('aws-sdk');
+const { Readable } = require('stream');
 const path = require('path');
 const fs = require('fs');
 const d3 = require('d3-dsv');
 const webshot = require('webshot');
+
+aws.config.update({
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  region: 'us-west-2'
+});
+
+const s3 = new aws.S3();
 
 async function asyncForEach(array, callback) {
   for (let index = 0; index < array.length; index++) {
@@ -9,35 +19,47 @@ async function asyncForEach(array, callback) {
   }
 }
 
-const captureScreenshot = (url, id) => {
-  return new Promise((resolve, reject) => {
+async function uploadReadableStream(stream, awsKey) {
+  const params = { Bucket: process.env.S3_BUCKET, Key: awsKey, Body: stream };
+  const result = await s3
+    .upload(params)
+    .promise()
+    .then(data => data)
+    .catch(error => error);
+  return result;
+}
+
+async function upload(readableStream, key) {
+  const readable = readableStream;
+  const results = await uploadReadableStream(readable, key);
+  return results;
+}
+
+const captureScreenshot = (url, id) =>
+  new Promise((resolve, reject) => {
     const options = {
       captureSelector: '#stream_pagelet',
       errorIfStatusIsNot200: true,
       timeout: 30 * 1000
     };
 
-    const location = `${path.join(__dirname, '..', `public/${id}.png`)}`;
-
-    return webshot(url, location, options, err => {
-      if (err) {
-        console.log(err);
-        reject(err);
-      }
-      resolve(location);
+    webshot(url, options, async (err, stream) => {
+      if (err) return err;
+      const readableStream = new Readable().wrap(stream);
+      const result = await upload(readableStream, `${id}.png`);
+      resolve(result);
     });
   });
-};
 
 const processArray = async arr => {
   const date = Date.now();
   await asyncForEach(arr, async element => {
-    const imgLocation = await captureScreenshot(
+    const img = await captureScreenshot(
       element.Permalink,
       `${element['Ad ID']}-${date}`
     );
-    console.log(imgLocation);
-    element.imgPath = imgLocation;
+    console.log(img);
+    element.imgPath = img.Location; // eslint-disable-line
   });
   return arr;
 };
