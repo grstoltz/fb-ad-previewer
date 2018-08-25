@@ -38,8 +38,16 @@ async function upload(readableStream, key) {
 const captureScreenshot = (url, id) =>
   new Promise((resolve, reject) => {
     const options = {
+      windowSelector: {
+        width: 1920,
+        height: 1000
+      },
+      renderDelay: 1000,
       captureSelector: '#stream_pagelet',
       errorIfStatusIsNot200: true,
+      customCSS: `#u_0_c {
+        display: none;
+      }`,
       timeout: 30 * 1000
     };
 
