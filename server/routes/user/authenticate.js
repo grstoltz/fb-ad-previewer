@@ -26,7 +26,7 @@ const createToken = auth =>
     {
       id: auth.id
     },
-    'my-secret',
+    process.env.JWT_SECRET,
     {
       expiresIn: 60 * 120
     }

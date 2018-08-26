@@ -1,6 +1,11 @@
 const db = require('../models');
+const s3 = require('../services/s3');
 
-// const { data } = require('../db/data');
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
 
 exports.getInstance = (req, res) => {
   const processResults = async arr => {
@@ -62,6 +67,46 @@ exports.getInstance = (req, res) => {
     .catch(err => res.status(422).json(err));
 };
 
+exports.getInstanceByUser = (req, res) => {
+  db.Instance.findAll({
+    where: {
+      createdBy: req.params.id
+    }
+  })
+    .then(result => {
+      const mappedArray = result.map(element => element.instanceId);
+      const filteredArray = [...new Set(mappedArray)];
+      res.status(200).send(filteredArray);
+    })
+    .catch(err => res.status(422).json(err));
+};
+
+exports.deleteInstance = (req, res) => {
+  const deleteImages = imgArr => {
+    const result = s3.deleteInstanceImages(imgArr);
+    return result;
+  };
+
+  db.Instance.findAll({ where: { instanceId: req.params.id } }).then(result => {
+    const mappedArray = result.map(element => {
+      const imgKey = element.imgPath
+        .split('/')
+        .slice(-1)[0]
+        .replace(/%3A/g, ':');
+      return {
+        Key: imgKey
+      };
+    });
+    deleteImages(mappedArray);
+
+    return db.Instance.destroy({
+      where: { instanceId: req.params.id }
+    })
+      .then(result => res.status(200).json(result))
+      .catch(err => res.status(422).json(err));
+  });
+};
+
 exports.createInstance = async (req, res) => {
   async function asyncForEach(array, callback) {
     for (let index = 0; index < array.length; index++) {
@@ -81,10 +126,12 @@ exports.createInstance = async (req, res) => {
       'Ad Set Name': adSetName,
       'Ad ID': adId,
       'Ad Name': adName,
-      imgPath
+      imgPath,
+      createdBy
     } = element;
 
     db.Instance.create({
+      createdBy,
       instanceId,
       campaignId,
       campaignName,

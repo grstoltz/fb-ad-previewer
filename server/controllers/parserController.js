@@ -59,7 +59,7 @@ const captureScreenshot = (url, id) =>
     });
   });
 
-const processArray = async arr => {
+const processArray = async (arr, req) => {
   const date = Date.now();
   await asyncForEach(arr, async element => {
     const img = await captureScreenshot(
@@ -68,19 +68,21 @@ const processArray = async arr => {
     );
     console.log(img);
     element.imgPath = img.Location; // eslint-disable-line
+    element.createdBy = req.body.userId; // eslint-disable-line
   });
   return arr;
 };
 
-const parseTSV = async str => {
+const parseTSV = async (str, req) => {
   const parsedTSV = await d3.tsvParse(str);
-  const processedArray = await processArray(parsedTSV);
+  const processedArray = await processArray(parsedTSV, req);
   return processedArray;
 };
 
 exports.parse = async (req, res, next) => {
+  console.log(req);
   const strBuffer = req.files[0].buffer.toString('utf-16le');
-  const processedArray = await parseTSV(strBuffer);
+  const processedArray = await parseTSV(strBuffer, req);
   res.app.locals.data = processedArray;
   next();
 };

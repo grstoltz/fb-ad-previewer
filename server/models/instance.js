@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true
       },
       instanceId: DataTypes.STRING,
+      createdBy: DataTypes.STRING,
       campaignId: DataTypes.STRING,
       campaignName: DataTypes.STRING,
       adSetId: DataTypes.STRING,
