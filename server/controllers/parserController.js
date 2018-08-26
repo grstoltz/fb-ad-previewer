@@ -47,6 +47,10 @@ const captureScreenshot = (url, id) =>
       errorIfStatusIsNot200: true,
       customCSS: `#u_0_c {
         display: none;
+      }
+      
+      #u_0_a {
+        display: none;
       }`,
       timeout: 30 * 1000
     };

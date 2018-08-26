@@ -61,7 +61,7 @@ app.use((err, req, res, next) => {
 
 db.sequelize.sync().then(() => {
   app.listen(PORT, () => {
-    console.log(`Sequelize listening on PORT ${PORT}`);
+    console.log(`Listening on PORT ${PORT}`);
   });
 });
 module.exports = app;
