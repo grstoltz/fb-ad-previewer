@@ -78,7 +78,10 @@ exports.getInstanceByUser = (req, res) => {
       const filteredArray = [...new Set(mappedArray)];
       res.status(200).send(filteredArray);
     })
-    .catch(err => res.status(422).json(err));
+    .catch(err => {
+      console.log(err);
+      return res.status(422).json(err);
+    });
 };
 
 exports.deleteInstance = (req, res) => {
@@ -108,6 +111,7 @@ exports.deleteInstance = (req, res) => {
 };
 
 exports.createInstance = async (req, res) => {
+  console.log(req);
   async function asyncForEach(array, callback) {
     for (let index = 0; index < array.length; index++) {
       await callback(array[index], index, array);

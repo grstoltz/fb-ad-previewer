@@ -70,7 +70,6 @@ const processArray = async (arr, req) => {
       element.Permalink,
       `${element['Ad ID']}-${date}`
     );
-    console.log(img);
     element.imgPath = img.Location; // eslint-disable-line
     element.createdBy = req.body.userId; // eslint-disable-line
   });
@@ -84,7 +83,6 @@ const parseTSV = async (str, req) => {
 };
 
 exports.parse = async (req, res, next) => {
-  console.log(req);
   const strBuffer = req.files[0].buffer.toString('utf-16le');
   const processedArray = await parseTSV(strBuffer, req);
   res.app.locals.data = processedArray;

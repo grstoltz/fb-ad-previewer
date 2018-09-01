@@ -13,7 +13,6 @@ exports.upsertFbUser = (accessToken, refreshToken, profile, cb) => {
     .then(result => {
       const user = result[0];
       const created = result[1];
-      console.log(user);
       if (!created) {
         return cb(null, user);
       }
@@ -21,3 +20,12 @@ exports.upsertFbUser = (accessToken, refreshToken, profile, cb) => {
     })
     .catch(err => console.log(err));
 };
+
+exports.verifyUser = tokenId =>
+  db.User.findOne({
+    where: {
+      id: tokenId
+    }
+  })
+    .then(result => result)
+    .catch(err => err);
