@@ -15,7 +15,7 @@ const protectedRoute = (req, res, next) => {
           next();
         } else {
           res.status(422).send({
-            message: 'No token provided.'
+            message: 'No user found'
           });
         }
       });
