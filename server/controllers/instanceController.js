@@ -1,11 +1,11 @@
 const db = require('../models');
-const s3 = require('../services/s3');
+const cloudinary = require('../services/cloudinary');
 
-async function asyncForEach(array, callback) {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array);
-  }
-}
+// async function asyncForEach(array, callback) {
+//   for (let index = 0; index < array.length; index++) {
+//     await callback(array[index], index, array);
+//   }
+// }
 
 exports.getInstance = (req, res) => {
   const processResults = async arr => {
@@ -68,6 +68,7 @@ exports.getInstance = (req, res) => {
 };
 
 exports.getInstanceByUser = (req, res) => {
+  console.log(req);
   db.Instance.findAll({
     where: {
       createdBy: req.params.id
@@ -84,30 +85,14 @@ exports.getInstanceByUser = (req, res) => {
     });
 };
 
-exports.deleteInstance = (req, res) => {
-  const deleteImages = imgArr => {
-    const result = s3.deleteInstanceImages(imgArr);
-    return result;
-  };
+exports.deleteInstance = async (req, res) => {
+  await cloudinary.deleteImages(req.params.id);
 
-  db.Instance.findAll({ where: { instanceId: req.params.id } }).then(result => {
-    const mappedArray = result.map(element => {
-      const imgKey = element.imgPath
-        .split('/')
-        .slice(-1)[0]
-        .replace(/%3A/g, ':');
-      return {
-        Key: imgKey
-      };
-    });
-    deleteImages(mappedArray);
-
-    return db.Instance.destroy({
-      where: { instanceId: req.params.id }
-    })
-      .then(result => res.status(200).json(result))
-      .catch(err => res.status(422).json(err));
-  });
+  db.Instance.destroy({
+    where: { instanceId: req.params.id }
+  })
+    .then(result => res.status(200).json(result))
+    .catch(err => res.status(422).json(err));
 };
 
 exports.createInstance = async (req, res) => {
@@ -117,11 +102,9 @@ exports.createInstance = async (req, res) => {
     }
   }
 
-  const instanceId = Math.random()
-    .toString()
-    .slice(2, 11);
+  const { instanceId, data } = res.app.locals;
 
-  await asyncForEach(res.app.locals.data, element => {
+  await asyncForEach(data, element => {
     const {
       [Object.keys(element)[0]]: campaignId,
       'Campaign Name': campaignName,

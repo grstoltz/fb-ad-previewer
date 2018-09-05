@@ -4,15 +4,18 @@
   "private": true,
   "scripts": {
     "server": "node app.js",
-    "client": "cd .. && cd client && npm run start",
-    "start": "concurrently --kill-others \"nodemon --exec babel-node app.js\" \"npm run client\"",
-    "build": "cd client && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "yarn build && git add . && git commit -m \"Building for production\" && git push",
+    "build": "cd .. && cd client && npm run build",
+    "start": "concurrently --kill-others \"nodemon app.js\" \"npm run client\"",
+    "client": "cd client && npm run start",
     "lint": "node_modules/eslint/bin/eslint.js *"
   },
   "dependencies": {
     "aws-sdk": "^2.296.0",
     "babel-eslint": "^8.2.6",
     "body-parser": "~1.18.2",
+    "cloudinary": "^1.11.0",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
     "d3-dsv": "^1.0.8",

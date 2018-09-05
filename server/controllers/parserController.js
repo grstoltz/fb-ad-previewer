@@ -1,18 +1,6 @@
-const aws = require('aws-sdk');
-const { Readable } = require('stream');
-const path = require('path');
-const fs = require('fs');
 const d3 = require('d3-dsv');
-const webshot = require('webshot');
 const puppeteer = require('puppeteer');
-
-aws.config.update({
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  region: 'us-west-2'
-});
-
-const s3 = new aws.S3();
+const cloudinary = require('../services/cloudinary');
 
 async function asyncForEach(array, callback) {
   for (let index = 0; index < array.length; index++) {
@@ -20,18 +8,7 @@ async function asyncForEach(array, callback) {
   }
 }
 
-function upload(stream, awsKey) {
-  // eslint-disable-next-line
-  return new Promise((resolve, reject) => {
-    const params = { Bucket: process.env.S3_BUCKET, Key: awsKey, Body: stream };
-    s3.upload(params)
-      .promise()
-      .then(data => resolve(data))
-      .catch(error => reject(error));
-  });
-}
-
-const captureScreenshot = async (url, id) => {
+const captureScreenshot = async (url, instanceId) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   // Adjustments particular to this page to ensure we hit desktop breakpoint.
@@ -43,9 +20,6 @@ const captureScreenshot = async (url, id) => {
 
   /**
    * Takes a screenshot of a DOM element on the page, with optional padding.
-   *
-   * @param {!{path:string, selector:string, padding:(number|undefined)}=, customCSS:string} opts
-   * @return {!Promise<!Buffer>}
    */
   async function screenshotDOMElement(opts = {}) {
     const padding = 'padding' in opts ? opts.padding : 0;
@@ -78,9 +52,9 @@ const captureScreenshot = async (url, id) => {
     const screenshot = await page.screenshot({
       clip: {
         x: rect.left - padding,
-        y: rect.top - padding,
+        y: rect.top,
         width: rect.width + padding * 2,
-        height: rect.height + padding * 2
+        height: rect.height + 25
       }
     });
 
@@ -118,38 +92,35 @@ const captureScreenshot = async (url, id) => {
     customCSS: cssStr
   });
 
-  console.log(screenshot);
-
-  const result = await upload(screenshot, `${id}.png`);
+  const result = await cloudinary.upload(screenshot, instanceId);
 
   browser.close();
 
   return result;
 };
 
-const processArray = async (arr, req) => {
-  const date = Date.now();
+const processArray = async (arr, req, instanceId) => {
   await asyncForEach(arr, async element => {
-    const img = await captureScreenshot(
-      element.Permalink,
-      `${element['Ad ID']}-${date}`
-    );
-    console.log(img);
-    element.imgPath = img.Location; // eslint-disable-line
+    const img = await captureScreenshot(element.Permalink, instanceId);
+    element.imgPath = img.url; // eslint-disable-line
     element.createdBy = req.body.userId; // eslint-disable-line
   });
   return arr;
 };
 
-const parseTSV = async (str, req) => {
+const parseTSV = async (str, req, instanceId) => {
   const parsedTSV = await d3.tsvParse(str);
-  const processedArray = await processArray(parsedTSV, req);
+  const processedArray = await processArray(parsedTSV, req, instanceId);
   return processedArray;
 };
 
 exports.parse = async (req, res, next) => {
+  const instanceId = Math.random()
+    .toString()
+    .slice(2, 11);
   const strBuffer = req.files[0].buffer.toString('utf-16le');
-  const processedArray = await parseTSV(strBuffer, req);
+  const processedArray = await parseTSV(strBuffer, req, instanceId);
   res.app.locals.data = processedArray;
+  res.app.locals.instanceId = instanceId;
   next();
 };
