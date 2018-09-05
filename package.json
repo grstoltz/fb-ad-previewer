@@ -1,0 +1,20 @@
+{
+  "name": "fb-parser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "/server/app.js",
+  "scripts": {
+    "start": "cd server && npm run server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grstoltz/fb-parser.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/grstoltz/fb-parser/issues"
+  },
+  "homepage": "https://github.com/grstoltz/fb-parser#readme"
+}
