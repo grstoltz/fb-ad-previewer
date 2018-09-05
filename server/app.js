@@ -15,7 +15,7 @@ const db = require('./models');
 
 const ddos = new Ddos({ burst: 10, limit: 15 });
 
-const PORT = 8081;
+const PORT = process.env.PORT || 8081;
 
 const app = express();
 
