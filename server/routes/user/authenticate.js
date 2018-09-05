@@ -45,6 +45,7 @@ const sendToken = (req, res) => {
 router.route('/').post(
   passport.authenticate('facebook-token', { session: false }),
   (req, res, next) => {
+    console.log(req);
     if (!req.user) {
       return res.send(401, 'User Not Authenticated');
     }
