@@ -12,7 +12,7 @@ const headerConfig = {
 
 export default {
   getInstance: function(id) {
-    return axios.get(`http://localhost:8081/api/instance/${id}`, headerConfig);
+    return axios.get(`/api/instance/${id}`, headerConfig);
   },
   createInstance: function(data) {
     const config = {
@@ -21,18 +21,12 @@ export default {
         'access-token': usertoken
       }
     };
-    return axios.post(`http://localhost:8081/api/parser/`, data, config);
+    return axios.post(`/api/parser/`, data, config);
   },
   getInstanceByUser: function(userId) {
-    return axios.get(
-      `http://localhost:8081/api/instance/user/${userId}`,
-      headerConfig
-    );
+    return axios.get(`/api/instance/user/${userId}`, headerConfig);
   },
   deleteInstance: function(instanceId) {
-    return axios.delete(
-      `http://localhost:8081/api/instance/${instanceId}`,
-      headerConfig
-    );
+    return axios.delete(`/api/instance/${instanceId}`, headerConfig);
   }
 };
