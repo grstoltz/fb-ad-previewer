@@ -18,6 +18,12 @@ const captureScreenshot = async (url, instanceId) => {
     waitUntil: 'networkidle0'
   });
 
+  try {
+    await page.click('#expanding_cta_close_button');
+  } catch (e) {
+    console.log(e);
+  }
+
   /**
    * Takes a screenshot of a DOM element on the page, with optional padding.
    */
@@ -25,19 +31,8 @@ const captureScreenshot = async (url, instanceId) => {
     const padding = 'padding' in opts ? opts.padding : 0;
     const path = 'path' in opts ? opts.path : null;
     const { selector } = opts;
-    const { customCSS } = opts;
 
     if (!selector) throw Error('Please provide a selector.');
-
-    if (customCSS) {
-      await page.evaluate(customCSS => {
-        const style = document.createElement('style');
-        const text = document.createTextNode(customCSS);
-        style.setAttribute('type', 'text/css');
-        style.appendChild(text);
-        document.head.insertBefore(style, document.head.firstChild);
-      });
-    }
 
     const rect = await page.evaluate(selector => {
       const element = document.querySelector(selector);
@@ -52,44 +47,19 @@ const captureScreenshot = async (url, instanceId) => {
     const screenshot = await page.screenshot({
       clip: {
         x: rect.left - padding,
-        y: rect.top,
+        y: rect.top - 5,
         width: rect.width + padding * 2,
-        height: rect.height + 25
+        height: rect.height + 5
       }
     });
 
     return screenshot;
   }
 
-  const cssStr = `#u_0_c {
-    display: none;
-  }
-
-  #headerArea{
-     display: none;
-  }
-  
-  #outdatedBrowserBanner {
-    display: none;
-  }
-  
-  #u_0_3 {
-    display: none;
-  }
-  
-  #u_0_9 {
-    display: none;
-  }
-  
-  #u_0_a {
-    display: none;
-  }`;
-
   const screenshot = await screenshotDOMElement({
     // path: 'element.png',
-    selector: '#stream_pagelet',
+    selector: '#stream_pagelet'
     // padding: 8,
-    customCSS: cssStr
   });
 
   const result = await cloudinary.upload(screenshot, instanceId);

@@ -22,7 +22,7 @@ const protectedRoute = (req, res, next) => {
     });
   } else {
     // if there is no token
-    res.send({
+    res.status(422).send({
       message: 'No token provided.'
     });
   }

@@ -3,3 +3,5 @@ const protectedRoute = require('../../services/protectedRoute');
 const userController = require('../../controllers/userController');
 
 router.route('/').delete(protectedRoute, userController.deleteUser);
+
+module.exports = router;

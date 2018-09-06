@@ -12,7 +12,8 @@ exports.upload = (fileBuffer, instanceId) =>
       .upload_stream(
         {
           resource_type: 'raw',
-          public_id: `${instanceId}`
+          use_filename: true,
+          folder: `${instanceId}/`
         },
         (error, result) => {
           if (error) {
