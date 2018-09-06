@@ -51,7 +51,14 @@ class Main extends Component {
 
   render() {
     return (
-      <div style={{ position: 'absolute', height: '100%', width: '100%' }}>
+      <div
+        style={{
+          position: 'absolute',
+          height: '100%',
+          width: '100%',
+          display: 'table'
+        }}
+      >
         <Sidebar
           as={Menu}
           animation="push"
