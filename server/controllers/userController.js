@@ -29,3 +29,12 @@ exports.verifyUser = tokenId =>
   })
     .then(result => result)
     .catch(err => err);
+
+exports.deleteUser = (req, res) =>
+  db.User.delete({
+    where: {
+      facebookProviderId: req.params.id
+    }
+  })
+    .then(result => result)
+    .catch(err => err);
