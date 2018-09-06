@@ -80,24 +80,14 @@ class Upload extends Component {
     };
 
     return (
-      <div className="upload-form">
+      <div className="upload-form" style={{ marginTop: '5em' }}>
         <Modal
           isOpen={this.state.openModal}
           instanceId={this.state.instanceId}
           handleClose={this.handleModalClose}
         />
-        <style>{`
-      body > div,
-      body > div > div,
-      body > div > div > div.upload-form {
-        height: 100%;
-      }
-    `}</style>
-        <Grid
-          textAlign="center"
-          style={{ height: '100%' }}
-          verticalAlign="middle"
-        >
+
+        <Grid textAlign="center" verticalAlign="middle">
           <Grid.Column style={{ maxWidth: 450 }}>
             <Header as="h2" color="blue" textAlign="center">
               Facebook Ads Previewer
