@@ -18,7 +18,7 @@ function login(response) {
   ]);
 
   return axios
-    .post('http://localhost:8081/user/auth', tokenBlob, {
+    .post('/user/auth', tokenBlob, {
       headers: { 'Content-Type': 'application/json' }
     })
     .then(r => {
