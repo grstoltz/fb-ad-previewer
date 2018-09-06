@@ -9,7 +9,7 @@ async function asyncForEach(array, callback) {
 }
 
 const captureScreenshot = async (url, instanceId) => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
   const page = await browser.newPage();
   // Adjustments particular to this page to ensure we hit desktop breakpoint.
   page.setViewport({ width: 1920, height: 1000, deviceScaleFactor: 1 });
