@@ -9,6 +9,7 @@ import { Upload } from './pages/Upload';
 import ControlPanel from './pages/ControlPanel';
 import Main from './pages/Main';
 import { Login } from './pages/Login';
+import Privacy from './pages/Privacy';
 import Home from './pages/Home';
 
 import { history } from './_helpers';
@@ -34,6 +35,7 @@ class App extends Component {
         <div>
           <MenuBar isLoggedIn={user} />
           <Route exact path="/" component={Home} />
+          <Route exact path="/privacy-policy" component={Privacy} />
           <Route exact path="/login" component={Login} />
           <PrivateRoute path="/control" component={ControlPanel} />
           <PrivateRoute path="/upload" component={Upload} />

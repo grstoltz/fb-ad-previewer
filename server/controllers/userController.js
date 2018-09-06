@@ -1,7 +1,6 @@
 const db = require('../models');
 
 exports.upsertFbUser = (accessToken, refreshToken, profile, cb) => {
-  console.log(profile);
   db.User.findOrCreate({
     where: { facebookProviderId: profile.id },
     defaults: {
