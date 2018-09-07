@@ -8,19 +8,18 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true
       },
       instanceId: DataTypes.STRING,
-      createdBy: DataTypes.STRING,
-      campaignId: DataTypes.STRING,
-      campaignName: DataTypes.STRING,
-      adSetId: DataTypes.STRING,
-      adSetName: DataTypes.STRING,
-      adId: DataTypes.STRING,
-      adName: DataTypes.STRING,
-      imgPath: DataTypes.STRING
+      // createdBy: DataTypes.STRING,
+      processing: DataTypes.BOOLEAN
     },
     {
       timestamps: false,
       freezeTableName: true
     }
   );
+  Instance.associate = models => {
+    Instance.belongsTo(models.User, {
+      foreignKey: 'userId'
+    });
+  };
   return Instance;
 };
