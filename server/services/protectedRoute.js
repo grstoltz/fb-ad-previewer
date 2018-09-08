@@ -7,11 +7,14 @@ const protectedRoute = (req, res, next) => {
     // verifies secret and checks if the token is expired
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
+        console.log(err);
         return res.status(422).json(err);
       }
       // if token is present, make sure it is associated with the user that is making the request
       userController.verifyUser(decoded.id).then(result => {
         if (result.facebookProviderId === req.headers.userid) {
+          console.log(result.id);
+          req.user = result.id;
           next();
         } else {
           res.status(422).send({

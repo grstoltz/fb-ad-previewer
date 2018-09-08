@@ -22,8 +22,7 @@ class ControlPanel extends Component {
   }
 
   getUserInstances() {
-    const userId = localStorage.getItem('fbuid');
-    API.getInstanceByUser(userId)
+    API.getInstanceByUser()
       .then(res => {
         console.log(res);
         this.setState({ data: res.data });

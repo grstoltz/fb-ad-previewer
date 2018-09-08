@@ -1,10 +1,8 @@
 const router = require('express').Router();
-const parserRoutes = require('./parser');
-// const campaignRoutes = require('./campaign');
+const contentRoutes = require('./content');
 const instanceRoutes = require('./instance');
 
-router.use('/parser', parserRoutes);
-// router.use('/campaign', campaignRoutes);
+router.use('/content', contentRoutes);
 router.use('/instance', instanceRoutes);
 
 module.exports = router;

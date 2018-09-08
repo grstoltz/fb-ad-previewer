@@ -1,16 +1,22 @@
 const router = require('express').Router();
+const multer = require('multer');
 const protectedRoute = require('../../services/protectedRoute');
 const instanceController = require('../../controllers/instanceController');
 
-router.route('/').post(protectedRoute, instanceController.createInstance);
+const storage = multer.memoryStorage();
+
+const upload = multer({ storage });
+
+router.route('/user').get(protectedRoute, instanceController.getInstanceByUser);
 
 router
   .route('/:id')
+  .post(protectedRoute, instanceController.createInstance)
   .get(instanceController.getInstance)
   .delete(protectedRoute, instanceController.deleteInstance);
 
 router
-  .route('/user/:id')
-  .get(protectedRoute, instanceController.getInstanceByUser);
+  .route('/')
+  .post([upload.any(), protectedRoute], instanceController.createInstance);
 
 module.exports = router;

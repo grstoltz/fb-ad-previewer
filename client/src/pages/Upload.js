@@ -51,10 +51,11 @@ class Upload extends Component {
     formData.append('userId', localStorage.getItem('fbuid'));
     API.createInstance(formData)
       .then(response => {
+        console.log(response);
         this.setState({ file: null, status: null });
-        if (response.status === 200) {
+        if (response.status === 202) {
           this.setState({
-            instanceId: response.data.instanceId,
+            instanceId: response.data.id,
             openModal: true,
             status: null
           });

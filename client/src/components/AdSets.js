@@ -14,8 +14,6 @@ class AdSets extends Component {
 
   renderAdSets = () => {
     const { adSets } = this.props;
-    console.log(this.props.adSets);
-    //console.log(adSets);
     const { activeIndex } = this.state;
 
     return adSets.map((adSet, masterIndex) => {

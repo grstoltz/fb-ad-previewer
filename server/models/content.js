@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true
       },
-      // instanceId: DataTypes.STRING,
+      instanceId: DataTypes.STRING,
       createdBy: DataTypes.STRING,
       campaignId: DataTypes.STRING,
       campaignName: DataTypes.STRING,

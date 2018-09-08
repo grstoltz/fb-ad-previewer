@@ -1,14 +1,21 @@
 module.exports = (sequelize, DataTypes) => {
+  const generateId = () => {
+    const instanceId = Math.random()
+      .toString()
+      .slice(2, 11);
+    return instanceId;
+  };
+
   const Instance = sequelize.define(
     'Instance',
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        defaultValue() {
+          return generateId();
+        }
       },
-      instanceId: DataTypes.STRING,
-      // createdBy: DataTypes.STRING,
       processing: DataTypes.BOOLEAN
     },
     {

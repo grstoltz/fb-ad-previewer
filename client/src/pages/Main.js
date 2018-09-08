@@ -7,7 +7,8 @@ class Main extends Component {
   state = {
     data: [],
     adSets: [],
-    activeItem: ''
+    activeItem: '',
+    processing: null
   };
 
   componentDidMount() {
@@ -16,6 +17,19 @@ class Main extends Component {
 
   getInstance() {
     API.getInstance(this.props.match.params.id)
+      .then(res => {
+        if (!res.data.processing) {
+          this.getContent();
+          this.setState({ processing: res.data.processing });
+        } else {
+          this.setState({ processing: true });
+        }
+      })
+      .catch(err => console.log(err));
+  }
+
+  getContent() {
+    API.getContent(this.props.match.params.id)
       .then(res => {
         this.setState({ data: res.data });
       })
@@ -79,8 +93,11 @@ class Main extends Component {
           </Menu.Item>
           {this.renderCampaigns(this.state.data)}
         </Sidebar>
+
         <Container style={{ float: 'left', padding: '25px', width: '75%' }}>
-          {this.state.adSets.length > 0 ? (
+          {this.state.processing ? (
+            <div>Processing</div>
+          ) : this.state.adSets.length > 0 ? (
             <AdSets
               campaign={this.state.activeItem}
               adSets={this.state.adSets}
