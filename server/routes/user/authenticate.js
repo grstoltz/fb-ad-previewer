@@ -28,7 +28,7 @@ const createToken = auth =>
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: 60 * 120
+      expiresIn: '7d'
     }
   );
 
