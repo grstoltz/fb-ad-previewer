@@ -22,10 +22,10 @@ module.exports = (sequelize, DataTypes) => {
       freezeTableName: true
     }
   );
-  Content.associate = models => {
-    Content.belongsTo(models.Instance, {
-      foreignKey: 'instanceId'
-    });
-  };
+  // Content.associate = models => {
+  //   Content.belongsTo(models.Instance, {
+  //     foreignKey: 'instanceId'
+  //   });
+  // };
   return Content;
 };
