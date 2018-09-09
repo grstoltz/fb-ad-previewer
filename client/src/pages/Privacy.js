@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Button,
-  Container,
-  Grid,
-  Header,
-  Icon,
-  Segment
-} from 'semantic-ui-react';
+import { Container, Header } from 'semantic-ui-react';
 
 import Footer from '../components/Footer';
 

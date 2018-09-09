@@ -132,7 +132,6 @@ const captureScreenshot = async (url, instanceId) => {
 const processArray = async (arr, instanceId) => {
   await asyncForEach(arr, async element => {
     const img = await captureScreenshot(element.Permalink, instanceId);
-    console.log(img);
     element.imgPath = img.url; // eslint-disable-line
   });
   return arr;

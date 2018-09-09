@@ -37,6 +37,14 @@ class Upload extends Component {
     this.setState({ [name]: value });
   };
 
+  isDisabled = () => {
+    if (this.state.status === 'loading' || this.state.status === null) {
+      return true;
+    } else if (this.state.status === 'ready') {
+      return false;
+    }
+  };
+
   handleModalClose = () => {
     this.setState({
       openModal: false
@@ -127,7 +135,7 @@ class Upload extends Component {
               color="blue"
               type="submit"
               onClick={this.handleClick}
-              disabled={!this.state.status}
+              disabled={this.isDisabled()}
             >
               Upload
             </Button>

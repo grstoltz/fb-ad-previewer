@@ -8,13 +8,14 @@ import {
   Message
 } from 'semantic-ui-react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
-import AdSets from '../components/AdSets';
 import API from '../utils/API';
 
 class ControlPanel extends Component {
   state = {
     data: [],
-    error: null
+    deleting: [],
+    error: null,
+    status: null
   };
 
   componentWillMount() {
@@ -31,9 +32,14 @@ class ControlPanel extends Component {
 
   handleDelete = event => {
     const instanceId = event.target.id;
+    this.setState({ deleting: [...instanceId] });
     API.deleteInstance(instanceId)
       .then(result => {
         this.getUserInstances();
+        const array = [...this.state.deleting];
+        const index = array.indexOf(instanceId);
+        array.splice(index, 1);
+        this.setState({ deleting: array });
       })
       .catch(error =>
         this.setState({
@@ -45,13 +51,17 @@ class ControlPanel extends Component {
   renderInstances(data) {
     return data.map((element, index) => {
       return (
-        <List.Item key={index} verticalAlign="middle">
+        <List.Item key={index}>
           <List.Content
             id={element}
             onClick={this.handleDelete}
             floated="right"
           >
-            <Button onClick={this.handleDelete} id={element}>
+            <Button
+              disabled={this.state.deleting.includes(element) ? true : false}
+              onClick={this.handleDelete}
+              id={element}
+            >
               <Icon id={element} onClick={this.handleDelete} name="trash" />
             </Button>
           </List.Content>
@@ -80,7 +90,7 @@ class ControlPanel extends Component {
         )}
 
         {this.state.data.length > 0 ? (
-          <List celled verticalAlign="middle" size={'huge'}>
+          <List celled size={'huge'}>
             {this.renderInstances(this.state.data)}
           </List>
         ) : (

@@ -56,9 +56,7 @@ const Home = (props, mobile) => (
           made!
         </p>
         <Link to="/upload">
-          <Button as="a" size="large">
-            Let's do it!
-          </Button>
+          <Button size="large">Let's do it!</Button>
         </Link>
       </Container>
     </Segment>
