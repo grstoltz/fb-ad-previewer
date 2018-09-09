@@ -13,7 +13,7 @@ router
   .route('/:id')
   .post(protectedRoute, instanceController.createInstance)
   .get(instanceController.getInstance)
-  .delete(protectedRoute, instanceController.deleteInstance);
+  .delete(instanceController.deleteInstance);
 
 router
   .route('/')

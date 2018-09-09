@@ -24,9 +24,9 @@ class MenuBar extends React.Component {
               <Dropdown text="Profile">
                 <Dropdown.Menu>
                   <Link to="/control">
-                    <Dropdown.Item>Settings</Dropdown.Item>
+                    <Dropdown.Item>My Uploads</Dropdown.Item>
                   </Link>
-                  <Link to="/login">
+                  <Link to="/logout">
                     <Dropdown.Item>Logout</Dropdown.Item>
                   </Link>
                 </Dropdown.Menu>

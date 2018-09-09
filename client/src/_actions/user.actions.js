@@ -40,6 +40,7 @@ function login(response) {
 
 function logout() {
   userService.logout();
+  history.push('/');
   return { type: userConstants.LOGOUT };
 }
 

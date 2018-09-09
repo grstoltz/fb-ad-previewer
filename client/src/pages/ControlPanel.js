@@ -17,14 +17,13 @@ class ControlPanel extends Component {
     error: null
   };
 
-  componentDidMount() {
+  componentWillMount() {
     this.getUserInstances();
   }
 
   getUserInstances() {
     API.getInstanceByUser()
       .then(res => {
-        console.log(res);
         this.setState({ data: res.data });
       })
       .catch(err => console.log(err));
@@ -69,9 +68,9 @@ class ControlPanel extends Component {
       <Container style={{ padding: '25px' }}>
         <Header as="h2" icon textAlign="center">
           <Icon name="settings" />
-          Account Settings
+          My Uploads
           <Header.Subheader>
-            Manage your previous uploaded files.
+            Manage your previously uploaded files.
           </Header.Subheader>
         </Header>
         {this.state.error ? (

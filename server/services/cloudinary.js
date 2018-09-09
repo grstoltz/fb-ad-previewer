@@ -1,4 +1,5 @@
 const cloudinary = require('cloudinary');
+const uuidv1 = require('uuid/v1');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -8,12 +9,13 @@ cloudinary.config({
 
 exports.upload = (fileBuffer, instanceId) =>
   new Promise((resolve, reject) => {
+    const uuid = uuidv1();
     cloudinary.v2.uploader
       .upload_stream(
         {
-          resource_type: 'raw',
           use_filename: true,
-          folder: `${instanceId}/`
+          public_id: `${uuid}`,
+          tags: instanceId
         },
         (error, result) => {
           if (error) {
@@ -25,9 +27,12 @@ exports.upload = (fileBuffer, instanceId) =>
       .end(fileBuffer);
   });
 
-exports.deleteImages = instanceId =>
-  new Promise((resolve, reject) => {
-    cloudinary.api.delete_resources_by_prefix(`${instanceId}/`, result => {
+exports.deleteImages = instanceId => {
+  const instance = instanceId;
+  return new Promise((resolve, reject) => {
+    cloudinary.v2.api.delete_resources_by_tag(instance, (error, result) => {
+      if (error) reject(error);
       resolve(result);
     });
   });
+};

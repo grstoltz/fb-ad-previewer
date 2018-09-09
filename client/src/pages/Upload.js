@@ -93,11 +93,7 @@ class Upload extends Component {
             <Header as="h2" color="blue" textAlign="center">
               Facebook Ads Previewer
             </Header>
-            {this.state.error ? (
-              <Message>An error has occured, please try again later.</Message>
-            ) : (
-              <div />
-            )}
+            {this.state.error ? <Message>{this.state.error}</Message> : ''}
             <Dropzone
               style={dropzoneStyle}
               activeStyle={{ ...dropzoneStyle, borderColor: '#2185d0' }}

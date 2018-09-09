@@ -9,6 +9,7 @@ import { Upload } from './pages/Upload';
 import ControlPanel from './pages/ControlPanel';
 import Main from './pages/Main';
 import { Login } from './pages/Login';
+import { Logout } from './pages/Logout';
 import Privacy from './pages/Privacy';
 import Home from './pages/Home';
 
@@ -29,7 +30,6 @@ class App extends Component {
 
   render() {
     const { user } = this.props;
-    console.log(user);
     return (
       <Router history={history} r>
         <div>
@@ -37,6 +37,7 @@ class App extends Component {
           <Route exact path="/" component={Home} />
           <Route exact path="/privacy-policy" component={Privacy} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/logout" component={Logout} />
           <PrivateRoute path="/control" component={ControlPanel} />
           <PrivateRoute path="/upload" component={Upload} />
           <PrivateRoute exact path="/a/:id" component={Main} />

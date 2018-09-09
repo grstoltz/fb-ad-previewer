@@ -108,7 +108,7 @@ const captureScreenshot = async (url, instanceId) => {
     const screenshot = await page.screenshot({
       clip: {
         x: rect.left - padding,
-        y: rect.top - 5,
+        y: rect.top + 7,
         width: rect.width + padding * 2,
         height: rect.height + 5
       }
@@ -132,6 +132,7 @@ const captureScreenshot = async (url, instanceId) => {
 const processArray = async (arr, instanceId) => {
   await asyncForEach(arr, async element => {
     const img = await captureScreenshot(element.Permalink, instanceId);
+    console.log(img);
     element.imgPath = img.url; // eslint-disable-line
   });
   return arr;

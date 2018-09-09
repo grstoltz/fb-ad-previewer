@@ -11,24 +11,28 @@ class AlertModal extends Component {
 
   componentDidMount() {
     this.setState({
-      value: `${window.location.host}/a/${this.props.instanceId}`
+      value: `https://${window.location.host}/a/${this.props.instanceId}`
     });
   }
 
   componentWillReceiveProps(props) {
     this.setState({
-      value: `${window.location.host}/a/${props.instanceId}`
+      value: `https://${window.location.host}/a/${props.instanceId}`
     });
   }
 
   render() {
     return (
       <Modal open={this.props.isOpen} size="large" style={{ height: '15%' }}>
-        <Modal.Header>Complete!</Modal.Header>
+        <Modal.Header>Your upload is being processed...</Modal.Header>
         <Modal.Content>
           {this.state.copied ? (
             <Message positive>Copied to clipboard.</Message>
           ) : null}
+          <p>
+            Go there now or check back later. Depending on the number of ads it
+            could take several minutes.
+          </p>
           <Input
             style={{ width: '80%' }}
             value={this.state.value}
