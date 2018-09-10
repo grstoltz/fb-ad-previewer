@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Sidebar, Menu, Container } from 'semantic-ui-react';
+import { Sidebar, Menu, Container, Header, Icon } from 'semantic-ui-react';
 import AdSets from '../components/AdSets';
 import API from '../utils/API';
 
@@ -96,14 +96,21 @@ class Main extends Component {
 
         <Container style={{ float: 'left', padding: '25px', width: '75%' }}>
           {this.state.processing ? (
-            <div>Processing</div>
+            <Header style={{ marginTop: '40%' }} as="h2" textAlign="center">
+              Processing...
+              <Header style={{ marginTop: '15px' }} as="h5" textAlign="center">
+                Check back in a few minutes and refresh this page.
+              </Header>
+            </Header>
           ) : this.state.adSets.length > 0 ? (
             <AdSets
               campaign={this.state.activeItem}
               adSets={this.state.adSets}
             />
           ) : (
-            <div>Select a campaign to begin</div>
+            <Header style={{ marginTop: '40%' }} as="h2" textAlign="center">
+              <Icon name="arrow left" /> Select a campaign to begin.
+            </Header>
           )}
         </Container>
       </div>

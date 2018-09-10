@@ -21,7 +21,13 @@ class MenuBar extends React.Component {
               </Menu.Item>
             </Link>
             <Menu.Item>
-              <Dropdown text="Profile">
+              <Dropdown
+                trigger={
+                  <span>
+                    <Icon name="user" />
+                  </span>
+                }
+              >
                 <Dropdown.Menu>
                   <Link to="/control">
                     <Dropdown.Item>My Uploads</Dropdown.Item>

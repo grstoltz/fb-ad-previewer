@@ -32,7 +32,7 @@ class ControlPanel extends Component {
 
   handleDelete = event => {
     const instanceId = event.target.id;
-    this.setState({ deleting: [...instanceId] });
+    this.setState({ deleting: [...this.state.deleting, instanceId] });
     API.deleteInstance(instanceId)
       .then(result => {
         this.getUserInstances();
@@ -58,7 +58,7 @@ class ControlPanel extends Component {
             floated="right"
           >
             <Button
-              disabled={this.state.deleting.includes(element) ? true : false}
+              disabled={this.state.deleting.includes(element)}
               onClick={this.handleDelete}
               id={element}
             >

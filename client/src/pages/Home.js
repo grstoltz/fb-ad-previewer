@@ -36,7 +36,7 @@ const Home = (props, mobile) => (
           }}
         />
         <Link to="/upload">
-          <Button primary size="huge">
+          <Button style={{ marginBottom: '1.5em' }} primary size="huge">
             Get Started
             <Icon name="right arrow" />
           </Button>

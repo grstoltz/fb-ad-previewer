@@ -3,7 +3,18 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { Container, Grid, Segment } from 'semantic-ui-react';
 
 const Footer = props => (
-  <Segment inverted vertical style={{ padding: '1em 0em', marginTop: '5%' }}>
+  <Segment
+    inverted
+    vertical
+    style={{
+      right: 0,
+      bottom: 0,
+      left: 0,
+      padding: '1rem',
+      marginTop: '5px',
+      textAlign: 'center'
+    }}
+  >
     <Container>
       <Grid divided inverted stackable centered>
         <Grid.Row>

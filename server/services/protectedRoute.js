@@ -13,7 +13,6 @@ const protectedRoute = (req, res, next) => {
       // if token is present, make sure it is associated with the user that is making the request
       userController.verifyUser(decoded.id).then(result => {
         if (result.facebookProviderId === req.headers.userid) {
-          console.log(result.id);
           req.user = result.id;
           next();
         } else {
