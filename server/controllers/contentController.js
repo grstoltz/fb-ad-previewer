@@ -69,8 +69,7 @@ async function asyncForEach(array, callback) {
   }
 }
 
-const captureScreenshot = async (url, instanceId) => {
-  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+const captureScreenshot = async (browser, url, instanceId) => {
   const page = await browser.newPage();
   // Adjustments particular to this page to ensure we hit desktop breakpoint.
   page.setViewport({ width: 1920, height: 1000, deviceScaleFactor: 1 });
@@ -97,7 +96,9 @@ const captureScreenshot = async (url, instanceId) => {
 
     const rect = await page.evaluate(selector => {
       const element = document.querySelector(selector);
-      if (!element) return null;
+      if (!element) {
+        return null;
+      }
       const { x, y, width, height } = element.getBoundingClientRect();
       return { left: x, top: y, width, height, id: element.id };
     }, selector);
@@ -124,16 +125,18 @@ const captureScreenshot = async (url, instanceId) => {
 
   const result = await cloudinary.upload(screenshot, instanceId);
 
-  browser.close();
+  page.close();
 
   return result;
 };
 
 const processArray = async (arr, instanceId) => {
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
   await asyncForEach(arr, async element => {
-    const img = await captureScreenshot(element.Permalink, instanceId);
+    const img = await captureScreenshot(browser, element.Permalink, instanceId);
     element.imgPath = img.url; // eslint-disable-line
   });
+  browser.close();
   return arr;
 };
 

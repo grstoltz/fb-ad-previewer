@@ -21,16 +21,21 @@ passport.use(
   )
 );
 
-const createToken = auth =>
-  jwt.sign(
+const createToken = auth => {
+  const d = new Date();
+  const calculatedExpiresIn =
+    d.getTime() + 60 * 60 * 1000 - (d.getTime() - d.getMilliseconds()) / 1000;
+  const token = jwt.sign(
     {
       id: auth.id
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: '7d'
+      expiresIn: calculatedExpiresIn
     }
   );
+  return token;
+};
 
 const generateToken = (req, res, next) => {
   req.token = createToken(req.auth);
