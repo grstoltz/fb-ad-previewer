@@ -19,7 +19,6 @@ class AdSets extends Component {
     return adSets.map((adSet, masterIndex) => {
       return (
         <div key={masterIndex}>
-          <Header>{this.props.campaign}</Header>
           <Accordion fluid styled style={{ marginBottom: '5%' }}>
             <Accordion.Title
               active={activeIndex === masterIndex}
@@ -49,7 +48,12 @@ class AdSets extends Component {
 
   render() {
     const { activeIndex } = this.state;
-    return <div>{this.renderAdSets()}</div>;
+    return (
+      <div>
+        <Header>{this.props.campaign}</Header>
+        <div>{this.renderAdSets()}</div>
+      </div>
+    );
   }
 }
 

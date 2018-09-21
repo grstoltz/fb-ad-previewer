@@ -22,7 +22,9 @@ class Main extends Component {
           this.getContent();
           this.setState({ processing: res.data.processing });
         } else {
+          // Checks the database every 30 seconds while on the page to see if it has processed
           this.setState({ processing: true });
+          setTimeout(this.getInstance(), 30000);
         }
       })
       .catch(err => console.log(err));
@@ -96,10 +98,10 @@ class Main extends Component {
 
         <Container style={{ float: 'left', padding: '25px', width: '75%' }}>
           {this.state.processing ? (
-            <Header style={{ marginTop: '40%' }} as="h2" textAlign="center">
+            <Header style={{ marginTop: '30%' }} as="h2" textAlign="center">
               Processing...
               <Header style={{ marginTop: '15px' }} as="h5" textAlign="center">
-                Check back in a few minutes and refresh this page.
+                Check back in a few minutes or just wait here.
               </Header>
             </Header>
           ) : this.state.adSets.length > 0 ? (
