@@ -16,15 +16,16 @@ class Main extends Component {
   }
 
   getInstance() {
+    console.log('function called');
     API.getInstance(this.props.match.params.id)
       .then(res => {
         if (!res.data.processing) {
           this.getContent();
           this.setState({ processing: res.data.processing });
         } else {
-          // Checks the database every 30 seconds while on the page to see if it has processed
+          // Checks the database every 10 seconds while on the page to see if it has processed
           this.setState({ processing: true });
-          setTimeout(this.getInstance(), 30000);
+          setTimeout(this.getInstance(), 10000);
         }
       })
       .catch(err => console.log(err));

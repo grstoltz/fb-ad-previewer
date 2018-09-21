@@ -19,28 +19,26 @@ class AdSets extends Component {
     return adSets.map((adSet, masterIndex) => {
       return (
         <div key={masterIndex}>
-          <Accordion fluid styled style={{ marginBottom: '5%' }}>
-            <Accordion.Title
-              active={activeIndex === masterIndex}
-              index={masterIndex}
-              onClick={this.handleClick}
-            >
-              <Icon name="dropdown" />
-              {adSet.adSetName}
-            </Accordion.Title>
-            {adSet.ads.map((ad, index) => {
-              return (
-                <Accordion.Content
-                  key={index}
-                  active={activeIndex === masterIndex}
-                >
-                  <p key={index}>Ad Name: {ad.adName}</p>
-                  <img src={ad.imgPath} />
-                  <Divider />
-                </Accordion.Content>
-              );
-            })}
-          </Accordion>
+          <Accordion.Title
+            active={activeIndex === masterIndex}
+            index={masterIndex}
+            onClick={this.handleClick}
+          >
+            <Icon name="dropdown" />
+            {adSet.adSetName}
+          </Accordion.Title>
+          {adSet.ads.map((ad, index) => {
+            return (
+              <Accordion.Content
+                key={index}
+                active={activeIndex === masterIndex}
+              >
+                <p key={index}>Ad Name: {ad.adName}</p>
+                <img src={ad.imgPath} />
+                <Divider />
+              </Accordion.Content>
+            );
+          })}
         </div>
       );
     });
@@ -51,7 +49,9 @@ class AdSets extends Component {
     return (
       <div>
         <Header>{this.props.campaign}</Header>
-        <div>{this.renderAdSets()}</div>
+        <Accordion fluid styled style={{ marginBottom: '5%' }}>
+          <div>{this.renderAdSets()}</div>
+        </Accordion>
       </div>
     );
   }
