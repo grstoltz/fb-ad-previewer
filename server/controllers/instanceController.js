@@ -5,10 +5,10 @@ const contentController = require('./contentController');
 exports.createInstance = (req, res) => {
   if (
     req.files[0].mimetype === 'text/csv' ||
-    'text/txt' ||
-    'application/vnd.ms-excel' ||
-    'text/x-csv' ||
-    'text/plain'
+    req.files[0].mimetype === 'text/txt' ||
+    req.files[0].mimetype === 'application/vnd.ms-excel' ||
+    req.files[0].mimetype === 'text/x-csv' ||
+    req.files[0].mimetype === 'text/plain'
   ) {
     db.Instance.create({
       userId: req.user,
